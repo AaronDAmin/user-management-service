@@ -59,9 +59,11 @@ namespace ECommerceAuth.Infrastructure.Services
             _jwtSecret = _configuration["Jwt:Secret"] ?? throw new InvalidOperationException("JWT Secret non configuré");
             _jwtIssuer = _configuration["Jwt:Issuer"] ?? "ECommerceAuth";
             _jwtAudience = _configuration["Jwt:Audience"] ?? "ECommerceAuth";
-            _accessTokenExpirationMinutes = int.Parse(_configuration["Jwt:AccessTokenExpirationMinutes"] ?? "30");
-            _refreshTokenExpirationDays = int.Parse(_configuration["Jwt:RefreshTokenExpirationDays"] ?? "7");
-            _refreshTokenExpirationDaysRememberMe = int.Parse(_configuration["Jwt:RefreshTokenExpirationDaysRememberMe"] ?? "30");
+            
+            // Safe parsing with fallback values
+            _accessTokenExpirationMinutes = int.TryParse(_configuration["Jwt:AccessTokenExpirationMinutes"], out var accessTokenExp) ? accessTokenExp : 30;
+            _refreshTokenExpirationDays = int.TryParse(_configuration["Jwt:RefreshTokenExpirationDays"], out var refreshTokenExp) ? refreshTokenExp : 7;
+            _refreshTokenExpirationDaysRememberMe = int.TryParse(_configuration["Jwt:RefreshTokenExpirationDaysRememberMe"], out var refreshTokenRememberExp) ? refreshTokenRememberExp : 30;
 
             // Validation de la sécurité de la clé
             if (_jwtSecret.Length < 32)
@@ -107,7 +109,7 @@ namespace ECommerceAuth.Infrastructure.Services
 
             _logger.LogInformation("Token JWT généré pour l'utilisateur {UserId}", user.Id);
             
-            return await Task.FromResult(tokenString);
+            return tokenString;
         }
 
         /// <summary>
