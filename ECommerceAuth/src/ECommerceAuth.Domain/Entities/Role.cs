@@ -49,7 +49,7 @@ namespace ECommerceAuth.Domain.Entities
         public Role(UserRole role, string description) : base()
         {
             Name = role.ToString();
-            Description = description;
+            Description = description ?? string.Empty;
         }
     }
 }

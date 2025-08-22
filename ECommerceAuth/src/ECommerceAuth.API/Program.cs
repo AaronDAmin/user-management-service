@@ -6,6 +6,7 @@ using System.Text;
 using ECommerceAuth.Infrastructure.Data;
 using ECommerceAuth.Application.Interfaces;
 using ECommerceAuth.Infrastructure.Services;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Reflection;
 
@@ -15,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ECommerceAuthDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlServer(connectionString);
+    options.UseSqlite(connectionString);
 });
 
 // Configuration JWT
@@ -46,13 +47,15 @@ builder.Services.AddAuthentication(options =>
 
 // Injection de dépendance
 builder.Services.AddScoped<ITokenService, TokenService>();
-// Note: IAuthService et IEmailService doivent être implémentés
-// builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+// Note: IEmailService doit encore être implémenté
 // builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Configuration des contrôleurs avec validation
-builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 // Configuration CORS
 builder.Services.AddCors(options =>
