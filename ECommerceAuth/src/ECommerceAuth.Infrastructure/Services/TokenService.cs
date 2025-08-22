@@ -14,6 +14,7 @@ using ECommerceAuth.Domain.Entities;
 using ECommerceAuth.Infrastructure.Data;
 using OtpNet;
 using QRCoder;
+using System.Linq;
 
 namespace ECommerceAuth.Infrastructure.Services
 {
@@ -75,7 +76,7 @@ namespace ECommerceAuth.Infrastructure.Services
         /// <summary>
         /// Génère un token JWT d'accès sécurisé pour un utilisateur.
         /// </summary>
-        public async Task<string> GenerateAccessTokenAsync(User user, IEnumerable<string> roles)
+        public string GenerateAccessToken(User user, IEnumerable<string> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
@@ -110,6 +111,12 @@ namespace ECommerceAuth.Infrastructure.Services
             _logger.LogInformation("Token JWT généré pour l'utilisateur {UserId}", user.Id);
             
             return tokenString;
+        }
+
+        // Async wrapper for backward compatibility
+        public Task<string> GenerateAccessTokenAsync(User user, IEnumerable<string> roles)
+        {
+            return Task.FromResult(GenerateAccessToken(user, roles));
         }
 
         /// <summary>
@@ -256,21 +263,32 @@ namespace ECommerceAuth.Infrastructure.Services
         }
 
         /// <summary>
-        /// Nettoie les tokens expirés et révoqués de la base de données.
+        /// Nettoie les tokens expirés et révoqués.
         /// </summary>
         public async Task<int> CleanupExpiredTokensAsync()
         {
-            var expiredTokens = await _context.RefreshTokens
-                .Where(rt => rt.ExpiresAt < DateTime.UtcNow || rt.IsRevoked)
-                .Where(rt => rt.CreatedAt < DateTime.UtcNow.AddDays(-30)) // Garder 30 jours pour audit
-                .ToListAsync();
+            try
+            {
+                var expiredTokens = await _context.RefreshTokens
+                    .Where(rt => rt.ExpiresAt <= DateTime.UtcNow || rt.IsRevoked)
+                    .ToListAsync();
 
-            _context.RefreshTokens.RemoveRange(expiredTokens);
-            await _context.SaveChangesAsync();
+                if (expiredTokens.Any())
+                {
+                    _context.RefreshTokens.RemoveRange(expiredTokens);
+                    await _context.SaveChangesAsync();
 
-            _logger.LogInformation("{Count} tokens expirés supprimés de la base de données", expiredTokens.Count);
-            
-            return expiredTokens.Count;
+                    _logger.LogInformation("Nettoyage terminé : {Count} tokens supprimés", expiredTokens.Count);
+                    return expiredTokens.Count;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors du nettoyage des tokens expirés");
+                return 0;
+            }
         }
 
         /// <summary>
@@ -278,9 +296,17 @@ namespace ECommerceAuth.Infrastructure.Services
         /// </summary>
         public async Task<RefreshToken?> GetActiveRefreshTokenAsync(string token)
         {
-            return await _context.RefreshTokens
-                .Include(rt => rt.User)
-                .FirstOrDefaultAsync(rt => rt.Token == token && rt.IsActive);
+            try
+            {
+                return await _context.RefreshTokens
+                    .Include(rt => rt.User)
+                    .FirstOrDefaultAsync(rt => rt.Token == token && !rt.IsRevoked && rt.ExpiresAt > DateTime.UtcNow);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la récupération du token actif");
+                return null;
+            }
         }
 
         /// <summary>
@@ -288,16 +314,24 @@ namespace ECommerceAuth.Infrastructure.Services
         /// </summary>
         public async Task<int> CountActiveTokensAsync(Guid userId)
         {
-            return await _context.RefreshTokens
-                .CountAsync(rt => rt.UserId == userId && rt.IsActive);
+            try
+            {
+                return await _context.RefreshTokens
+                    .CountAsync(rt => rt.UserId == userId && !rt.IsRevoked && rt.ExpiresAt > DateTime.UtcNow);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors du comptage des tokens actifs pour l'utilisateur {UserId}", userId);
+                return 0;
+            }
         }
 
         /// <summary>
-        /// Génère une clé secrète pour l'authentification 2FA.
+        /// Génère une clé secrète pour l'authentification à deux facteurs.
         /// </summary>
-        public string GenerateTwoFactorSecret()
+        public string GenerateTwoFactorSecretKey()
         {
-            var key = KeyGeneration.GenerateRandomKey(20); // 160 bits recommandés pour TOTP
+            var key = KeyGeneration.GenerateRandomKey(20);
             return Base32Encoding.ToString(key);
         }
 
@@ -306,13 +340,13 @@ namespace ECommerceAuth.Infrastructure.Services
         /// </summary>
         public string GenerateTwoFactorQrCode(string email, string secret, string issuer = "ECommerce Auth")
         {
-            var totpUri = $"otpauth://totp/{Uri.EscapeDataString(issuer)}:{Uri.EscapeDataString(email)}?secret={secret}&issuer={Uri.EscapeDataString(issuer)}";
+            var otpUri = $"otpauth://totp/{Uri.EscapeDataString(issuer)}:{Uri.EscapeDataString(email)}?secret={secret}&issuer={Uri.EscapeDataString(issuer)}";
             
             using var qrGenerator = new QRCodeGenerator();
-            var qrCodeData = qrGenerator.CreateQrCode(totpUri, QRCodeGenerator.ECCLevel.Q);
-            var qrCode = new Base64QRCode(qrCodeData);
+            using var qrCodeData = qrGenerator.CreateQrCode(otpUri, QRCodeGenerator.ECCLevel.Q);
+            using var qrCode = new Base64QRCode(qrCodeData);
             
-            return qrCode.GetGraphic(20); // Taille du QR code
+            return $"data:image/png;base64,{qrCode.GetGraphic(20)}";
         }
 
         /// <summary>
@@ -325,8 +359,7 @@ namespace ECommerceAuth.Infrastructure.Services
                 var secretBytes = Base32Encoding.ToBytes(secret);
                 var totp = new Totp(secretBytes);
                 
-                // Vérifier le code actuel et les codes des 30 secondes précédentes/suivantes
-                // pour compenser les décalages d'horloge
+                // Vérifier le code avec une tolérance d'une fenêtre (30 secondes avant/après)
                 return totp.VerifyTotp(code, out _, new VerificationWindow(1, 1));
             }
             catch (Exception ex)
@@ -335,5 +368,8 @@ namespace ECommerceAuth.Infrastructure.Services
                 return false;
             }
         }
+
+        // Fix method name to match interface
+        public string GenerateTwoFactorSecret() => GenerateTwoFactorSecretKey();
     }
 }

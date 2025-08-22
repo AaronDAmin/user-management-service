@@ -6,6 +6,7 @@ using System.Text;
 using ECommerceAuth.Infrastructure.Data;
 using ECommerceAuth.Application.Interfaces;
 using ECommerceAuth.Infrastructure.Services;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using System.Reflection;
 
@@ -56,8 +57,10 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Configuration des contrôleurs avec validation
-builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
+builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 // Configuration CORS
 builder.Services.AddCors(options =>

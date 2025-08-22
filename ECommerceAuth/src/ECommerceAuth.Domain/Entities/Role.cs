@@ -44,11 +44,11 @@ namespace ECommerceAuth.Domain.Entities
         /// <summary>
         /// Constructeur avec paramètres pour faciliter la création.
         /// </summary>
-        /// <param name="role">Le rôle à partir de l'énumération</param>
+        /// <param name="userRole">Le rôle à partir de l'énumération</param>
         /// <param name="description">Description du rôle</param>
-        public Role(UserRole role, string description) : base()
+        public Role(UserRole userRole, string description) : base()
         {
-            Name = role.ToString();
+            Name = userRole.ToString();
             Description = description;
         }
     }
