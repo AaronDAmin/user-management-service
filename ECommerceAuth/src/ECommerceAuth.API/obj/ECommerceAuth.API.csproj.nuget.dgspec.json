@@ -1,0 +1,324 @@
+{
+  "format": 1,
+  "restore": {
+    "/workspace/ECommerceAuth/src/ECommerceAuth.API/ECommerceAuth.API.csproj": {}
+  },
+  "projects": {
+    "/workspace/ECommerceAuth/src/ECommerceAuth.API/ECommerceAuth.API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/workspace/ECommerceAuth/src/ECommerceAuth.API/ECommerceAuth.API.csproj",
+        "projectName": "ECommerceAuth.API",
+        "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.API/ECommerceAuth.API.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/ECommerceAuth/src/ECommerceAuth.API/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/workspace/ECommerceAuth/src/ECommerceAuth.Application/ECommerceAuth.Application.csproj": {
+                "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Application/ECommerceAuth.Application.csproj"
+              },
+              "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj": {
+                "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj"
+              },
+              "/workspace/ECommerceAuth/src/ECommerceAuth.Infrastructure/ECommerceAuth.Infrastructure.csproj": {
+                "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Infrastructure/ECommerceAuth.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/ubuntu/.dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/workspace/ECommerceAuth/src/ECommerceAuth.Application/ECommerceAuth.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/workspace/ECommerceAuth/src/ECommerceAuth.Application/ECommerceAuth.Application.csproj",
+        "projectName": "ECommerceAuth.Application",
+        "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Application/ECommerceAuth.Application.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj": {
+                "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/ubuntu/.dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj",
+        "projectName": "ECommerceAuth.Domain",
+        "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/ubuntu/.dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/workspace/ECommerceAuth/src/ECommerceAuth.Infrastructure/ECommerceAuth.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/workspace/ECommerceAuth/src/ECommerceAuth.Infrastructure/ECommerceAuth.Infrastructure.csproj",
+        "projectName": "ECommerceAuth.Infrastructure",
+        "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Infrastructure/ECommerceAuth.Infrastructure.csproj",
+        "packagesPath": "/home/ubuntu/.nuget/packages/",
+        "outputPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/ubuntu/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "/workspace/ECommerceAuth/src/ECommerceAuth.Application/ECommerceAuth.Application.csproj": {
+                "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Application/ECommerceAuth.Application.csproj"
+              },
+              "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj": {
+                "projectPath": "/workspace/ECommerceAuth/src/ECommerceAuth.Domain/ECommerceAuth.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.8, )"
+            },
+            "Otp.NET": {
+              "target": "Package",
+              "version": "[1.4.0, )"
+            },
+            "QRCoder": {
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.14.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/home/ubuntu/.dotnet/sdk/9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
