@@ -461,11 +461,16 @@ namespace ECommerceAuth.API.Controllers
             var xForwardedFor = Request.Headers["X-Forwarded-For"].FirstOrDefault();
             if (!string.IsNullOrEmpty(xForwardedFor))
             {
-                return xForwardedFor.Split(',')[0].Trim();
+                // Take the first IP and validate it to prevent spoofing
+                var firstIp = xForwardedFor.Split(',')[0].Trim();
+                if (System.Net.IPAddress.TryParse(firstIp, out _))
+                {
+                    return firstIp;
+                }
             }
 
             var xRealIp = Request.Headers["X-Real-IP"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(xRealIp))
+            if (!string.IsNullOrEmpty(xRealIp) && System.Net.IPAddress.TryParse(xRealIp, out _))
             {
                 return xRealIp;
             }
@@ -494,9 +499,11 @@ namespace ECommerceAuth.API.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true, // Empêche l'accès via JavaScript (protection XSS)
-                Secure = true, // HTTPS uniquement
+                Secure = Request.IsHttps, // HTTPS uniquement si la requête est en HTTPS
                 SameSite = SameSiteMode.Strict, // Protection CSRF
-                Expires = DateTimeOffset.UtcNow.AddDays(7) // Durée de vie du cookie
+                Expires = DateTimeOffset.UtcNow.AddDays(7), // Durée de vie du cookie
+                Path = "/", // Limiter le chemin du cookie
+                IsEssential = true // Cookie essentiel pour le fonctionnement
             };
 
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);

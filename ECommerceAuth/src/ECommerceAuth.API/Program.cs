@@ -19,8 +19,14 @@ builder.Services.AddDbContext<ECommerceAuthDbContext>(options =>
 });
 
 // Configuration JWT
-var jwtSecret = builder.Configuration["Jwt:Secret"] ?? throw new InvalidOperationException("JWT Secret non configuré");
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET") ?? builder.Configuration["Jwt:Secret"] ?? throw new InvalidOperationException("JWT Secret non configuré");
 var key = Encoding.ASCII.GetBytes(jwtSecret);
+
+// Validate JWT secret length for security
+if (jwtSecret.Length < 32)
+{
+    throw new InvalidOperationException("La clé JWT doit faire au moins 32 caractères pour la sécurité");
+}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -46,9 +52,8 @@ builder.Services.AddAuthentication(options =>
 
 // Injection de dépendance
 builder.Services.AddScoped<ITokenService, TokenService>();
-// Note: IAuthService et IEmailService doivent être implémentés
-// builder.Services.AddScoped<IAuthService, AuthService>();
-// builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Configuration des contrôleurs avec validation
 builder.Services.AddControllers()
@@ -160,9 +165,15 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<ECommerceAuthDbContext>();
     try
     {
-        context.Database.EnsureCreated();
-        // Note: En production, utilisez les migrations au lieu de EnsureCreated
-        // context.Database.Migrate();
+        // Use migrations in production for data safety
+        if (app.Environment.IsDevelopment())
+        {
+            context.Database.EnsureCreated();
+        }
+        else
+        {
+            context.Database.Migrate();
+        }
     }
     catch (Exception ex)
     {
